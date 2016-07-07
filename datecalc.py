@@ -1,5 +1,5 @@
 #!/usr/bin/python
-from datetime import date
+from datetime import date, timedelta
 import string
 
 def addYears(dateIn, years):
@@ -17,8 +17,8 @@ def addYears(dateIn, years):
 def inputEndDate():
     """ Returns a date as recorded from user input. """
     try:
-        yrRaw, monRaw, dayRaw = raw_input("Please input the Expiry " +
-                "Date (Format: yyyy/mm/dd): ").split('/')
+        monRaw, dayRaw, yrRaw = raw_input("Please input the Expiry " +
+                "Date (Format: mm/dd/yyyy): ").split('/')
         yr = string.atoi(yrRaw, 10)
         mon = string.atoi(monRaw, 10)
         day = string.atoi(dayRaw, 10)
@@ -36,8 +36,31 @@ def inputRenewalLength(dateIn):
     dateOut = addYears(dateIn, yrs)
     return dateOut
 
+def adjustForWeekdays(dateIn):
+    """ Returns a date based on whether or not the input date
+    is on a weekend. If the input date falls on a Saturday or
+    Sunday, the return is the date on the following Monday. If
+    not, it returns the original date. """ 
+
+    #If Saturday, return the following Monday.
+    if dateIn.weekday() == 5:
+        return dateIn + timedelta(days = 2)
+
+    #If Sunday, return the following Monday
+    elif dateIn.weekday() == 6:
+        return dateIn + timedelta(days = 1)
+
+    #On any other weekday, return the date
+    else:
+        return dateIn
+    
 
 if __name__ == "__main__":
     base = inputEndDate()
     renew = inputRenewalLength(base)
+    mondayCheck = adjustForWeekdays(renew)
     print renew
+    print renew.weekday()
+    print mondayCheck
+    print mondayCheck.weekday()
+    print (mondayCheck - date.today()).days
