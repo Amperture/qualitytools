@@ -1,6 +1,10 @@
-#!/usr/bin/python
+#!/usr/bin/python2
 from datetime import date, timedelta
 import string
+
+# Assume at minimum 28 days per month, 12 months per year.
+# (((12 * 3) + 3) * 28)
+THREE_YEARS_THREE_MONTHS = (((12 * 3 ) + 3) * 28)
 
 def addYears(dateIn, years):
     """ Returns a date object that is the supplied `date` with `years` added
@@ -44,10 +48,14 @@ def adjustForWeekdays(dateIn):
 
     #If Saturday, return the following Monday.
     if dateIn.weekday() == 5:
+        print "Projected End Date falls on a Saturday, correcting "\
+        + "to fall on a Monday."
         return dateIn + timedelta(days = 2)
 
     #If Sunday, return the following Monday
     elif dateIn.weekday() == 6:
+        print "Projected End Date falls on a Sunday, correcting "\
+        + "to fall on a Monday."
         return dateIn + timedelta(days = 1)
 
     #On any other weekday, return the date
@@ -63,4 +71,8 @@ if __name__ == "__main__":
     print renew.weekday()
     print mondayCheck
     print mondayCheck.weekday()
-    print (mondayCheck - date.today()).days
+    finalAmount = (mondayCheck - date.today()).days
+    if  finalAmount > THREE_YEARS_THREE_MONTHS:
+        print "WARNING! This amount could technically be longer than "\
+        + "Three Years, Three Months"
+    print finalAmount
